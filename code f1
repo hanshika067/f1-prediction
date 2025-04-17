@@ -1,0 +1,72 @@
+# Drop columns we don't need to avoid merge conflicts
+races = races.drop(columns=['url'], errors='ignore')
+drivers = drivers.drop(columns=['url', 'dob', 'nationality'], errors='ignore')
+constructors = constructors.drop(columns=['url', 'nationality'], errors='ignore')
+circuits = circuits.drop(columns=['url', 'lat', 'lng', 'alt', 'location', 'country'], errors='ignore')
+
+# Merge cleaned data
+df = results.merge(races, on='raceId') \
+            .merge(drivers, on='driverId') \
+            .merge(constructors, on='constructorId') \
+            .merge(circuits, on='circuitId')
+df['is_winner'] = df['positionOrder'].apply(lambda x: 1 if x == 1 else 0)
+df = df[['driverRef', 'constructorRef', 'grid', 'year', 'round', 'circuitRef', 'name_x', 'is_winner']]
+df.rename(columns={'name_x': 'race_name'}, inplace=True)
+import numpy as np
+np.random.seed(42)
+df['weather'] = np.random.choice(['Sunny', 'Rainy', 'Cloudy'], len(df))
+weather_encoder = LabelEncoder()
+df['weather'] = weather_encoder.fit_transform(df['weather'])
+X = df[['driverRef', 'constructorRef', 'grid', 'year', 'round', 'circuitRef', 'weather']]
+y = df['is_winner']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+from sklearn.preprocessing import LabelEncoder
+
+# Create label encoders for categorical columns
+categorical_cols = ['driverRef', 'constructorRef', 'circuitRef']
+label_encoders = {}
+
+for col in categorical_cols:
+    le = LabelEncoder()
+    df[col] = le.fit_transform(df[col])
+    label_encoders[col] = le
+
+# Also encode weather
+df['weather'] = LabelEncoder().fit_transform(df['weather'])
+
+# Final feature selection
+X = df[['driverRef', 'constructorRef', 'grid', 'year', 'round', 'circuitRef', 'weather']]
+y = df['is_winner']
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+from sklearn.ensemble import RandomForestClassifier
+
+model = RandomForestClassifier(n_estimators=100, random_state=42)
+model.fit(X_train, y_train)
+# Take actual names and convert them using encoders
+user_driver = input("Enter driver name (e.g., hamilton): ").lower()
+user_team = input("Enter constructor/team (e.g., mercedes): ").lower()
+user_grid = int(input("Enter starting grid position (e.g., 1): "))
+user_year = int(input("Enter race year (e.g., 2020): "))
+user_round = int(input("Enter round (e.g., 1): "))
+user_circuit = input("Enter circuit (e.g., silverstone): ").lower()
+user_weather = input("Enter weather (Sunny/Rainy/Cloudy): ").capitalize()
+try:
+    input_data = pd.DataFrame([{
+        'driverRef': label_encoders['driverRef'].transform([user_driver])[0],
+        'constructorRef': label_encoders['constructorRef'].transform([user_team])[0],
+        'grid': user_grid,
+        'year': user_year,
+        'round': user_round,
+        'circuitRef': label_encoders['circuitRef'].transform([user_circuit])[0],
+        'weather': weather_encoder.transform([user_weather])[0]
+    }])
+except:
+    print("🚨 Invalid input detected. Please make sure names match the dataset.")
+    exit()
+
+# Predict
+prediction = model.predict(input_data)[0]
+print("\n🏁 Prediction:", "Winner" if prediction == 1 else "Not Winner")

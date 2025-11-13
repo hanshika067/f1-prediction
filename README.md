@@ -1,9 +1,9 @@
 
 F1 Race Winner Prediction Model
-📖 Overview
+Overview
 This project utilizes machine learning to predict the winner of Formula 1 races based on historical race data. By analyzing factors such as driver, constructor, grid position, race year, round, circuit, and weather conditions, the model forecasts the likelihood of a driver winning a race.
 
-⚙️ Features
+Features
 Data Preprocessing: Cleans and merges datasets to create a comprehensive feature set.
 
 Feature Engineering: Encodes categorical variables and generates synthetic features.
@@ -15,7 +15,7 @@ User Input Interface: Allows users to input race details and receive predictions
 Weather Simulation: Assigns random weather conditions to races for enhanced realism.​
 
 
-📊 Dataset
+Dataset
 The model is trained on historical F1 race data, including:
 
 Races: Information about each race (e.g., year, round, circuit).
@@ -28,7 +28,7 @@ Constructors: Information about teams (e.g., reference name).
 
 Circuits: Details about race circuits (e.g., reference name).​
 
-🧠 Model Details
+Model Details
 Algorithm: Random Forest Classifier
 
 Hyperparameters:
@@ -55,7 +55,7 @@ Weather condition​
 
 
 
-🧪 Usage
+Usage
 Input Race Details:
 
 When prompted, enter the following information:
@@ -78,10 +78,10 @@ Receive Prediction:
 
 The model will output whether the selected driver is predicted to win the race.
 
-📈 Model Evaluation
+Model Evaluation
 The model's performance can be assessed using metrics such as accuracy, precision, recall, and F1-score. These metrics provide insights into the model's ability to correctly predict race winners.​
 
-🚀 Future Enhancements
+Future Enhancements
 Feature Expansion: Incorporate additional features like tire wear, pit stop strategies, and driver form.
 
 Model Improvement: Experiment with other machine learning algorithms like XGBoost or Neural Networks.

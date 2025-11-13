@@ -1,4 +1,4 @@
-# Drop columns we don't need to avoid merge conflicts
+# Drop columns we don't need to avoid merge conflictss
 races = races.drop(columns=['url'], errors='ignore')
 drivers = drivers.drop(columns=['url', 'dob', 'nationality'], errors='ignore')
 constructors = constructors.drop(columns=['url', 'nationality'], errors='ignore')
